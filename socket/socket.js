@@ -271,3 +271,5 @@ function minimax(newBoard, player, aiPlayer, huPlayer) {
   }
   return moves[bestMove];
 }
+
+module.exports = initializeSocket;
