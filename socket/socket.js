@@ -1,3 +1,4 @@
+// FILE: /socket/socket.js
 const games = {}; // In-memory store for active games
 
 function initializeSocket(io) {
@@ -97,16 +98,18 @@ function initializeSocket(io) {
         game.board = Array(9).fill(null);
         game.winner = null;
         game.rematch = [];
-        // Alternate who starts the next game
-        game.currentPlayer =
-          game.players.length > 1
-            ? game.players[1].symbol
-            : game.players[0].symbol;
-        // Swap player symbols for the next game
-        [game.players[0].symbol, game.players[1].symbol] = [
-          game.players[1].symbol,
-          game.players[0].symbol,
-        ];
+
+        // --- THIS IS THE FIX ---
+        // Only swap symbols if there are two players
+        if (game.players.length > 1) {
+          const player1 = game.players[0];
+          const player2 = game.players[1];
+          [player1.symbol, player2.symbol] = [player2.symbol, player1.symbol];
+          game.currentPlayer = player1.symbol; // The new 'X' always starts
+        } else {
+          // For AI games, just reset the current player
+          game.currentPlayer = game.players[0].symbol;
+        }
 
         io.to(gameId).emit("gameUpdate", game);
       }
@@ -148,8 +151,6 @@ function checkWinner(board) {
   }
   return null;
 }
-
-// AI functions (getEasyMove, getMediumMove, getHardMove, minimax, aiMove) remain the same...
 
 function aiMove(game, gameId, io) {
   const aiSymbol = game.currentPlayer;
