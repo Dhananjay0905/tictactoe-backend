@@ -28,7 +28,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "*", // In production, restrict this to your frontend's URL
+    origin: "https://tictactoe-frontend-sigma.vercel.app", // In production, restrict this to your frontend's URL
     methods: ["GET", "POST"],
   },
 });
